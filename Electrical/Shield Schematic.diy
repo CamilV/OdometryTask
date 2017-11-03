@@ -216,6 +216,35 @@
       <holeSize reference="../../org.diylc.components.connectivity.SolderPad/holeSize"/>
       <layer>_1</layer>
     </org.diylc.components.connectivity.SolderPad>
+    <org.diylc.components.connectivity.SolderPad>
+      <name>Pad10</name>
+      <size>
+        <value>0.09</value>
+        <unit class="org.diylc.core.measures.SizeUnit">in</unit>
+      </size>
+      <color>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+        <alpha>255</alpha>
+      </color>
+      <point x="1.5" y="0.8"/>
+      <type>ROUND</type>
+      <holeSize>
+        <value>0.8</value>
+        <unit class="org.diylc.core.measures.SizeUnit">mm</unit>
+      </holeSize>
+      <layer>_1</layer>
+    </org.diylc.components.connectivity.SolderPad>
+    <org.diylc.components.connectivity.SolderPad>
+      <name>Pad11</name>
+      <size reference="../../org.diylc.components.connectivity.SolderPad[10]/size"/>
+      <color reference="../../org.diylc.components.connectivity.SolderPad[10]/color"/>
+      <point x="1.5" y="0.9"/>
+      <type>ROUND</type>
+      <holeSize reference="../../org.diylc.components.connectivity.SolderPad[10]/holeSize"/>
+      <layer>_1</layer>
+    </org.diylc.components.connectivity.SolderPad>
     <org.diylc.components.connectivity.Dot>
       <name>Dot1</name>
       <size>
@@ -380,7 +409,7 @@
       <alpha>127</alpha>
       <controlPoints>
         <java.awt.Point x="0.7" y="1.0"/>
-        <java.awt.Point x="0.2" y="1.9"/>
+        <java.awt.Point x="0.6" y="1.8"/>
         <java.awt.Point x="0.6" y="2.1"/>
         <java.awt.Point x="0.8" y="2.8"/>
       </controlPoints>
@@ -421,7 +450,7 @@
         <java.awt.Point x="3.0" y="1.2"/>
       </controlPoints>
       <color>
-        <red>255</red>
+        <red>0</red>
         <green>255</green>
         <blue>0</blue>
         <alpha>255</alpha>
@@ -434,12 +463,12 @@
       <alpha>127</alpha>
       <controlPoints>
         <java.awt.Point x="1.8" y="0.1"/>
-        <java.awt.Point x="2.3" y="0.1"/>
-        <java.awt.Point x="2.3" y="1.1"/>
+        <java.awt.Point x="2.4" y="0.1"/>
+        <java.awt.Point x="2.4" y="1.1"/>
         <java.awt.Point x="3.0" y="1.1"/>
       </controlPoints>
       <color>
-        <red>0</red>
+        <red>255</red>
         <green>255</green>
         <blue>0</blue>
         <alpha>255</alpha>
@@ -452,9 +481,9 @@
       <alpha>127</alpha>
       <controlPoints>
         <java.awt.Point x="0.7" y="0.7"/>
-        <java.awt.Point x="2.2" y="0.7"/>
-        <java.awt.Point x="1.6" y="1.7"/>
-        <java.awt.Point x="2.6" y="1.7"/>
+        <java.awt.Point x="2.0" y="0.7"/>
+        <java.awt.Point x="2.0" y="2.1"/>
+        <java.awt.Point x="2.6" y="2.1"/>
       </controlPoints>
       <color>
         <red>255</red>
@@ -470,9 +499,9 @@
       <alpha>127</alpha>
       <controlPoints>
         <java.awt.Point x="0.7" y="0.8"/>
-        <java.awt.Point x="2.1" y="0.8"/>
-        <java.awt.Point x="1.7" y="1.8"/>
-        <java.awt.Point x="2.6" y="1.8"/>
+        <java.awt.Point x="1.9" y="0.8"/>
+        <java.awt.Point x="1.9" y="2.2"/>
+        <java.awt.Point x="2.6" y="2.2"/>
       </controlPoints>
       <color>
         <red>255</red>
@@ -489,8 +518,8 @@
       <controlPoints>
         <java.awt.Point x="0.7" y="0.9"/>
         <java.awt.Point x="1.8" y="0.9"/>
-        <java.awt.Point x="1.8" y="1.9"/>
-        <java.awt.Point x="2.6" y="1.9"/>
+        <java.awt.Point x="1.8" y="2.3"/>
+        <java.awt.Point x="2.6" y="2.3"/>
       </controlPoints>
       <color>
         <red>0</red>
@@ -600,31 +629,67 @@
       <flipStanding>false</flipStanding>
       <value></value>
     </org.diylc.components.semiconductors.LED>
+    <org.diylc.components.connectivity.HookupWire>
+      <name>W10</name>
+      <alpha>127</alpha>
+      <controlPoints>
+        <java.awt.Point x="1.5" y="0.8"/>
+        <java.awt.Point x="2.1" y="0.8"/>
+        <java.awt.Point x="2.1" y="1.6"/>
+        <java.awt.Point x="2.6" y="1.6"/>
+      </controlPoints>
+      <color>
+        <red>255</red>
+        <green>0</green>
+        <blue>0</blue>
+        <alpha>255</alpha>
+      </color>
+      <pointCount>FOUR</pointCount>
+      <gauge>_22</gauge>
+    </org.diylc.components.connectivity.HookupWire>
+    <org.diylc.components.connectivity.HookupWire>
+      <name>W11</name>
+      <alpha>127</alpha>
+      <controlPoints>
+        <java.awt.Point x="1.5" y="0.9"/>
+        <java.awt.Point x="2.1" y="0.9"/>
+        <java.awt.Point x="2.1" y="1.7"/>
+        <java.awt.Point x="2.6" y="1.7"/>
+      </controlPoints>
+      <color>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+        <alpha>255</alpha>
+      </color>
+      <pointCount>FOUR</pointCount>
+      <gauge>_22</gauge>
+    </org.diylc.components.connectivity.HookupWire>
     <org.diylc.components.misc.Label>
       <name>L1</name>
-      <point x="2.8" y="1.8"/>
+      <point x="2.8" y="2.2"/>
       <text>Servo</text>
       <font>
         <attributes>
-          <entry>
-            <awt-text-attribute>weight</awt-text-attribute>
-            <null/>
-          </entry>
           <entry>
             <awt-text-attribute>size</awt-text-attribute>
             <float>14.0</float>
           </entry>
           <entry>
-            <awt-text-attribute>superscript</awt-text-attribute>
+            <awt-text-attribute>width</awt-text-attribute>
+            <null/>
+          </entry>
+          <entry>
+            <awt-text-attribute>tracking</awt-text-attribute>
+            <null/>
+          </entry>
+          <entry>
+            <awt-text-attribute>weight</awt-text-attribute>
             <null/>
           </entry>
           <entry>
             <awt-text-attribute>family</awt-text-attribute>
             <string>Tahoma</string>
-          </entry>
-          <entry>
-            <awt-text-attribute>tracking</awt-text-attribute>
-            <null/>
           </entry>
           <entry>
             <awt-text-attribute>posture</awt-text-attribute>
@@ -635,7 +700,7 @@
             <null/>
           </entry>
           <entry>
-            <awt-text-attribute>width</awt-text-attribute>
+            <awt-text-attribute>superscript</awt-text-attribute>
             <null/>
           </entry>
         </attributes>
@@ -648,7 +713,7 @@
     </org.diylc.components.misc.Label>
     <org.diylc.components.misc.Label>
       <name>L2</name>
-      <point x="3.1" y="1.2"/>
+      <point x="3.1" y="1.1"/>
       <text>SCL</text>
       <font reference="../../org.diylc.components.misc.Label/font"/>
       <color reference="../../org.diylc.components.connectivity.SolderPad/color"/>
@@ -659,10 +724,78 @@
     </org.diylc.components.misc.Label>
     <org.diylc.components.misc.Label>
       <name>L3</name>
-      <point x="3.1" y="1.1"/>
+      <point x="3.1" y="1.2"/>
       <text>SDA</text>
       <font reference="../../org.diylc.components.misc.Label/font"/>
       <color reference="../../org.diylc.components.connectivity.SolderPad/color"/>
+      <center>false</center>
+      <horizontalAlignment>CENTER</horizontalAlignment>
+      <verticalAlignment>CENTER</verticalAlignment>
+      <orientation>DEFAULT</orientation>
+    </org.diylc.components.misc.Label>
+    <org.diylc.components.misc.Label>
+      <name>L4</name>
+      <point x="2.7" y="1.6"/>
+      <text>5V</text>
+      <font>
+        <attributes>
+          <entry>
+            <awt-text-attribute>size</awt-text-attribute>
+            <float>14.0</float>
+          </entry>
+          <entry>
+            <awt-text-attribute>width</awt-text-attribute>
+            <null/>
+          </entry>
+          <entry>
+            <awt-text-attribute>tracking</awt-text-attribute>
+            <null/>
+          </entry>
+          <entry>
+            <awt-text-attribute>weight</awt-text-attribute>
+            <null/>
+          </entry>
+          <entry>
+            <awt-text-attribute>family</awt-text-attribute>
+            <string>Tahoma</string>
+          </entry>
+          <entry>
+            <awt-text-attribute>posture</awt-text-attribute>
+            <null/>
+          </entry>
+          <entry>
+            <awt-text-attribute>transform</awt-text-attribute>
+            <null/>
+          </entry>
+          <entry>
+            <awt-text-attribute>superscript</awt-text-attribute>
+            <null/>
+          </entry>
+        </attributes>
+      </font>
+      <color reference="../../org.diylc.components.connectivity.SolderPad[10]/color"/>
+      <center>false</center>
+      <horizontalAlignment>CENTER</horizontalAlignment>
+      <verticalAlignment>CENTER</verticalAlignment>
+      <orientation>DEFAULT</orientation>
+    </org.diylc.components.misc.Label>
+    <org.diylc.components.misc.Label>
+      <name>L5</name>
+      <point x="2.7" y="1.7"/>
+      <text>GND</text>
+      <font reference="../../org.diylc.components.misc.Label[4]/font"/>
+      <color reference="../../org.diylc.components.connectivity.SolderPad[10]/color"/>
+      <center>false</center>
+      <horizontalAlignment>CENTER</horizontalAlignment>
+      <verticalAlignment>CENTER</verticalAlignment>
+      <orientation>DEFAULT</orientation>
+    </org.diylc.components.misc.Label>
+    <org.diylc.components.misc.Label>
+      <name>L6</name>
+      <point x="3.2" y="1.6"/>
+      <text>Coming from the MD25</text>
+      <font reference="../../org.diylc.components.misc.Label[4]/font"/>
+      <color reference="../../org.diylc.components.connectivity.SolderPad[10]/color"/>
       <center>false</center>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -675,24 +808,24 @@
   <font>
     <attributes>
       <entry>
-        <awt-text-attribute>weight</awt-text-attribute>
-        <null/>
-      </entry>
-      <entry>
         <awt-text-attribute>size</awt-text-attribute>
         <float>14.0</float>
       </entry>
       <entry>
-        <awt-text-attribute>superscript</awt-text-attribute>
+        <awt-text-attribute>width</awt-text-attribute>
+        <null/>
+      </entry>
+      <entry>
+        <awt-text-attribute>tracking</awt-text-attribute>
+        <null/>
+      </entry>
+      <entry>
+        <awt-text-attribute>weight</awt-text-attribute>
         <null/>
       </entry>
       <entry>
         <awt-text-attribute>family</awt-text-attribute>
         <string>Tahoma</string>
-      </entry>
-      <entry>
-        <awt-text-attribute>tracking</awt-text-attribute>
-        <null/>
       </entry>
       <entry>
         <awt-text-attribute>posture</awt-text-attribute>
@@ -703,7 +836,7 @@
         <null/>
       </entry>
       <entry>
-        <awt-text-attribute>width</awt-text-attribute>
+        <awt-text-attribute>superscript</awt-text-attribute>
         <null/>
       </entry>
     </attributes>

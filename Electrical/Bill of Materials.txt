@@ -1,0 +1,8 @@
+Part Name      Q    Notes
+R1             2    2.2k
+R2             1    560
+Buzzer         1
+LED            1    any color
+Male Headers  20
+Servo          1
+Wires          x    red,black,green,yellow 
