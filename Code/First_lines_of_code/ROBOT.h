@@ -7,7 +7,7 @@ class Robot
 {
   public:
     // Driving Functions
-    void Forward(float distance);
+    void Forward(int distance);
     void SpinLeft(float angle);
     void SpinRight(float angle);
     void Turn(int ForwardSpeed, int TurnSpeed);
@@ -19,7 +19,7 @@ class Robot
     // Initialize
     void Initialize();
 
-    // Global Variables
+  private:
     long E1, E2;
     bool Goal;
 }
