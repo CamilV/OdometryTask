@@ -15,6 +15,9 @@
 #define ESR        0x31   // byte to send to enable automatic speed regulation to command
 
 #define THRESHOLD   360   // random value, threshold below which the PID controller for the distance function driving activates
+// physical dimensions
+#define RadiusWheel 100  // mm random value
+#define WidthRobot  250   // mm random value
 
 // PID Forward Driving(used in the Drive function, to make the robot drive straight)
 #define DKp           0   // random value

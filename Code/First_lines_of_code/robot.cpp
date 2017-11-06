@@ -54,6 +54,7 @@ void Robot::Forward(int Distance){       // function that should make the robot 
   int LastError = 0, SumError = 0, Error;
   int Speed;
   int CurrentDistance, n=0;
+  Goal = 0;
   while(!Goal)                           // while it wasnt reached the target distance, it repeats this loop
   {
     ReadEncoders();                      // read the values of the encoders and stores them in E1 and E2
@@ -115,5 +116,29 @@ void Robot::Drive(int Speed){
   Wire.write(Speed2);
   Wire.write(S2);
   Wire.endTransmission();      // set speed of motor 2 (right)
+}
+
+void Robot::Turn(int Radius, int Degrees){
+  Wire.beginTransmission(Adress);
+  Wire.write(Mode);
+  Wire.write(0x01);            // sets the MD25 to mode 1
+  Wire.endTransmission();
+  
+  Wire.beginTransmission(Adress);
+  Wire.write(Command);
+  Wire.write(0x20);            // sends byte to restore the encoders to 0
+  Wire.endTransmission();
+
+  int LastError = 0, SumError = 0, Error;
+  int Speed;
+  int CurrentAngle, n=0;
+  float Angle1, Angle2;
+  Goal = 0;
+  while(!Goal){
+    ReadEncoders();
+    Angle1 = E1 * 180/(Radius - WidthRobot/2);
+    Angle2 = E2 * 180/(Radius + WidthRobot/2);
+    
+  }
 }
 
