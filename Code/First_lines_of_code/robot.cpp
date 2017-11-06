@@ -47,7 +47,7 @@ void Robot::Forward(int Distance){       // function that should make the robot 
   Wire.write(Command);
   Wire.write(0x20);            // sends byte to restore the encoders to 0
   Wire.endTransmission();
-  
+  Distance = 360 * Distance / (3.1428 * DiameterWheel);
   
   
   
