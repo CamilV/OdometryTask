@@ -16,13 +16,22 @@
 
 #define THRESHOLD   360   // random value, threshold below which the PID controller for the distance function driving activates
 // physical dimensions
-#define RadiusWheel 100  // mm random value
-#define WidthRobot  250   // mm random value
+#define RadiusWheel 100.0   // mm random value
+#define WidthRobot  250.0   // mm random value
 
 // PID Forward Driving(used in the Drive function, to make the robot drive straight)
 #define DKp           0   // random value
 #define DKd           0   // random value
 #define DKi           0   // random value
+
+// PID Turn Radius Degrees
+#define TKp           0
+#define TKd           0
+
+// PID Turn Straight Degrees
+#define DeKp          0
+#define DeKd          0
+#define DeKi          0
 
 // PID Distance(used to compute the accelerations when reaching the desired distance)
 #define Kp            0   // random value

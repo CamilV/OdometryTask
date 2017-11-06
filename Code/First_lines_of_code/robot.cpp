@@ -118,7 +118,7 @@ void Robot::Drive(int Speed){
   Wire.endTransmission();      // set speed of motor 2 (right)
 }
 
-void Robot::Turn(int Radius, int Degrees){
+void Robot::Turn(float Radius, int Degrees, bool Direction){  // left = 0 right = 1
   Wire.beginTransmission(Adress);
   Wire.write(Mode);
   Wire.write(0x01);            // sets the MD25 to mode 1
@@ -129,16 +129,76 @@ void Robot::Turn(int Radius, int Degrees){
   Wire.write(0x20);            // sends byte to restore the encoders to 0
   Wire.endTransmission();
 
-  int LastError = 0, SumError = 0, Error;
-  int Speed;
+  int LastError = 0,  Error;
+  SumError = 0;
+  float Speed;
   int CurrentAngle, n=0;
   float Angle1, Angle2;
   Goal = 0;
   while(!Goal){
     ReadEncoders();
-    Angle1 = E1 * 180/(Radius - WidthRobot/2);
-    Angle2 = E2 * 180/(Radius + WidthRobot/2);
-    
+    if(Direction == 0){
+      Angle1 = E1 * 180/((Radius - WidthRobot/2)*3.14);
+      Angle2 = E2 * 180/((Radius + WidthRobot/2)*3.14);
+      
+    }
+    else{
+      Angle1 = E1 * 180/((Radius + WidthRobot/2)*3.14);
+      Angle2 = E2 * 180/((Radius - WidthRobot/2)*3.14);
+    }
+    CurrentAngle = (Angle2+Angle1)/2;
+
+    Error = Degrees - CurrentAngle;
+    if(Error > 20) Speed = 127;
+    else {Speed = TKp * Error + TKd * (Error - LastError);
+          LastError = Error;
+    }
+    StraightTurn(Radius, Direction, Speed);
+    if(Error == 0) n++;         // every time the error is 0, the counter goes up by 1
+    if(Error > 50) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
+    if(n == 10) Goal = 1;
   }
+}
+
+void Robot::StraightTurn(float Radius, bool Direction,float Speed){
+  float Angle1, Angle2, Error,LastError, MotorCorrection;
+  float S1, S2;
+  if(Direction == 1){
+      Angle1 = E1 * 180/((Radius + WidthRobot/2)*3.14);
+      Angle2 = E2 * 180/((Radius - WidthRobot/2)*3.14);
+      Error = Angle1 - Angle2;
+      MotorCorrection = DeKp * Error + DeKd * (Error - LastError) + DeKi * SumError; 
+      LastError = Error;
+      SumError = SumError + Error;
+      S2 = Speed + MotorCorrection;
+      S1 = Speed - MotorCorrection;
+    }
+    else{
+      Angle1 = E1 * 180/((Radius - WidthRobot/2)*3.14);
+      Angle2 = E2 * 180/((Radius + WidthRobot/2)*3.14);
+      Error = Angle2 - Angle1;
+      MotorCorrection = DeKp * Error + DeKd * (Error - LastError) + DeKi * SumError; 
+      LastError = Error;
+      SumError = SumError + Error;
+      S2 = Speed - MotorCorrection;
+      S1 = Speed + MotorCorrection;
+    }
+    if(S1 > 127) S1 = 127;
+    if(S2 > 127) S2 = 127;
+    if(S1 < -128) S1 = -128;     // capping the values for the motor speeds, as a value bigger than 127 or smaller than -128 might fuck up the controller
+    if(S2 < -128) S2 = -128;
+    int Si1 = int(S1);
+    int Si2 = int(S2);
+    Wire.beginTransmission(Adress);
+    Wire.write(Speed1);
+    Wire.write(Si1);
+    Wire.endTransmission();       // set speed of motor 1 (left)
+  
+    Wire.beginTransmission(Adress);
+    Wire.write(Speed2);
+    Wire.write(Si2);
+    Wire.endTransmission();      // set speed of motor 2 (right)
+
+    
 }
 

@@ -12,7 +12,8 @@ class Robot
     void SpinRight(float angle);
     //void Turn(int ForwardSpeed, int TurnSpeed);
     void Drive(int Speed);
-    void Turn(int Radius,int Degrees);
+    void Turn(float Radius,int Degrees, bool Direction);
+    void StraightTurn(float Radius, bool Direction, float Speed);
     // Encoder Reading
     void ReadEncoders();
 
@@ -21,6 +22,7 @@ class Robot
     bool Goal;
   private:
     long E1, E2;
+    float SumError;
     
 }
 ;
