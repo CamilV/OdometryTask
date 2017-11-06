@@ -1,6 +1,11 @@
 #ifndef DEFINES_H_INCLUDED
 #define DEFINES_H_INCLUDED
 
+// pins
+#define LED           4
+#define Buzzer        5
+#define ServoMotor    6
+
 // Memory Adress
 #define Speed1     0x00   // register to acces the speed of motor 1 (left)
 #define Speed2     0x01   // register to acces the speed of motor 2 (right)
