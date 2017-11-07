@@ -13,7 +13,7 @@ void Robot::ReadEncoders()
   Wire.endTransmission();
   
   Wire.requestFrom(Adress, 4);                         // Request 4 bytes from MD25
-  while(Wire.available() < 4);                              // Wait for 4 bytes to arrive
+  while(Wire.available() < 4);                             // Wait for 4 bytes to arrive
   E1 = Wire.read();                                 // First byte for encoder 1, HH.
   E1 <<= 8;
   E1 += Wire.read();                                     // Second byte for encoder 1, HL
@@ -35,9 +35,13 @@ void Robot::ReadEncoders()
   E2 += Wire.read();                                     // Third byte for encoder 2, LH
   E2 <<= 8;
   E2  +=Wire.read();                                     // Fourth byte for encoder 2, LL
+  Serial.print(E1);
+  Serial.print("  ");
+  Serial.println(E2);
 
 }
 void Robot::Forward(int Distance){       // function that should make the robot drive forward in a straight line for a specified distance
+  Serial.print("Forward");
   Wire.beginTransmission(Adress);
   Wire.write(Mode);
   Wire.write(0x01);            // sets the MD25 to mode 1
@@ -50,13 +54,13 @@ void Robot::Forward(int Distance){       // function that should make the robot 
   Distance = 360 * Distance / (3.1428 * DiameterWheel);
   
   
-  
   int LastError = 0, SumError = 0, Error;
   int Speed;
   int CurrentDistance, n=0;
   Goal = 0;
   while(!Goal)                           // while it wasnt reached the target distance, it repeats this loop
   {
+    
     ReadEncoders();                      // read the values of the encoders and stores them in E1 and E2
     CurrentDistance = (E1+E2) / 2;       // computes the distance travelled as the average of the 2 encoders
     Error = Distance - CurrentDistance;  // computes the error in order to use the PID controller
@@ -74,6 +78,9 @@ void Robot::Forward(int Distance){       // function that should make the robot 
     if(Error == 0) n++;         // every time the error is 0, the counter goes up by 1
     if(Error > 50) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
     if(n == 10) Goal = 1;       // random value, as soon as the counter reaches 10, it breaks out of the loop (it reaches the goal)
+    Serial.print("   ");
+    Serial.print(n);
+    Serial.print("   ");
   }
   
   Wire.beginTransmission(Adress);
@@ -90,10 +97,13 @@ void Robot::Forward(int Distance){       // function that should make the robot 
 
 void Robot::Drive(int Speed){
   int MotorCorrection, S1, S2, Error;
-  
+  Wire.beginTransmission(Adress);
+  Wire.write(Mode);
+  Wire.write(1);            // sets the MD25 to mode 1
+  Wire.endTransmission();
 
   
-  Error = E2 - E1;
+  Error = -E2 + E1;
   MotorCorrection = DKp * Error + DKd * (Error - LastErrorF) + DKi * SumErrorF;    // standard PID controller, needs the Ki term, calculates a motor correction factor
   LastErrorF = Error;              // in order to compute the derivative term
   SumErrorF = SumErrorF + Error;   // in order to compute the integral term
@@ -106,7 +116,7 @@ void Robot::Drive(int Speed){
   if(S1 < -128) S1 = -128;     // capping the values for the motor speeds, as a value bigger than 127 or smaller than -128 might fuck up the controller
   if(S2 < -128) S2 = -128;
 
-    
+  Serial.print("PID");
   Wire.beginTransmission(Adress);
   Wire.write(Speed1);
   Wire.write(S1);
