@@ -6,7 +6,8 @@ Robot R;
 void setup() {
   Serial.begin(9600);
   Wire.begin();
-  R.Forward(100);
+  R.Forward(300);
+  tone(Buzzer,50,1000);
 };
 
 void loop() {

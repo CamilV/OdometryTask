@@ -7,7 +7,7 @@ class Robot
 {
   public:
     // Driving Functions
-    void Forward(int distance);
+    void Forward(float distance);
     void Turn(float Radius,int Degrees, bool Direction);
     
     // Encoder Reading
@@ -20,7 +20,7 @@ class Robot
   private:
     long E1, E2;
     float SumError;
-    void Drive(int Speed);
+    void Drive(float Speed);
     void StraightTurn(float Radius, bool Direction, float Speed);
     
 }

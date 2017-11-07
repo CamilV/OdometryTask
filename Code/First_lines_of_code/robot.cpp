@@ -40,7 +40,7 @@ void Robot::ReadEncoders()
   Serial.println(E2);
 
 }
-void Robot::Forward(int Distance){       // function that should make the robot drive forward in a straight line for a specified distance
+void Robot::Forward(float Distance){       // function that should make the robot drive forward in a straight line for a specified distance
   Serial.print("Forward");
   Wire.beginTransmission(Adress);
   Wire.write(Mode);
@@ -50,23 +50,26 @@ void Robot::Forward(int Distance){       // function that should make the robot 
   Wire.beginTransmission(Adress);
   Wire.write(Command);
   Wire.write(0x20);            // sends byte to restore the encoders to 0
+  Wire.write(0x30);         
   Wire.endTransmission();
-  Distance = 360 * Distance / (3.1428 * DiameterWheel);
+  Distance = int(360 * Distance / CircumferenceWheel);
   
   
-  int LastError = 0, SumError = 0, Error;
-  int Speed;
-  int CurrentDistance, n=0;
+  float LastError = 0, SumError = 0, Error;
+  float Speed;
+  float CurrentDistance;
+  int n=0;
   Goal = 0;
+  SumErrorF = 0;
   while(!Goal)                           // while it wasnt reached the target distance, it repeats this loop
   {
     
     ReadEncoders();                      // read the values of the encoders and stores them in E1 and E2
     CurrentDistance = (E1+E2) / 2;       // computes the distance travelled as the average of the 2 encoders
     Error = Distance - CurrentDistance;  // computes the error in order to use the PID controller
+    if(CurrentDistance < 180) Speed = 25 + CurrentDistance*0.6;
     
-    
-    if(Error > THRESHOLD) Speed = 127;   // is the error is quite big, it travells at maximum speed
+    else if(Error > THRESHOLD) Speed = 127;   // is the error is quite big, it travells at maximum speed
     else
     {
       Speed = Kp*Error + Kd*(Error - LastError) + Ki * SumError;    // standard PID controller, though Ki might not be needed as the Integral of the distance does not have any significance
@@ -75,9 +78,9 @@ void Robot::Forward(int Distance){       // function that should make the robot 
     }
     
     Drive(Speed);
-    if(Error == 0) n++;         // every time the error is 0, the counter goes up by 1
-    if(Error > 50) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
-    if(n == 10) Goal = 1;       // random value, as soon as the counter reaches 10, it breaks out of the loop (it reaches the goal)
+    if((Error < 5) && (Error >-5)) n++;         // every time the error is 0, the counter goes up by 1
+    if((Error > 20)&&(Error < -20)) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
+    if(n == 5) Goal = 1;       // random value, as soon as the counter reaches 10, it breaks out of the loop (it reaches the goal)
     Serial.print("   ");
     Serial.print(n);
     Serial.print("   ");
@@ -95,16 +98,20 @@ void Robot::Forward(int Distance){       // function that should make the robot 
 }
 
 
-void Robot::Drive(int Speed){
-  int MotorCorrection, S1, S2, Error;
+void Robot::Drive(float Speed){
+  float MotorCorrection, S1, S2, Error;
   Wire.beginTransmission(Adress);
   Wire.write(Mode);
   Wire.write(1);            // sets the MD25 to mode 1
   Wire.endTransmission();
 
   
-  Error = -E2 + E1;
+  Error = E2 - E1;
+  Serial.print("   ");
+  Serial.print(Error);
+  Serial.print("   ");
   MotorCorrection = DKp * Error + DKd * (Error - LastErrorF) + DKi * SumErrorF;    // standard PID controller, needs the Ki term, calculates a motor correction factor
+  // MotorCorrection = 0;
   LastErrorF = Error;              // in order to compute the derivative term
   SumErrorF = SumErrorF + Error;   // in order to compute the integral term
 
@@ -119,13 +126,14 @@ void Robot::Drive(int Speed){
   Serial.print("PID");
   Wire.beginTransmission(Adress);
   Wire.write(Speed1);
-  Wire.write(S1);
+  Wire.write(int(S1));
   Wire.endTransmission();       // set speed of motor 1 (left)
 
   Wire.beginTransmission(Adress);
   Wire.write(Speed2);
-  Wire.write(S2);
+  Wire.write(int(S2));
   Wire.endTransmission();      // set speed of motor 2 (right)
+  //delay(5);
 }
 
 void Robot::Turn(float Radius, int Degrees, bool Direction){  // left = 0 right = 1
