@@ -19,28 +19,29 @@
 #define DSR        0x30   // byte to send to disable automatic speed regulation to command
 #define ESR        0x31   // byte to send to enable automatic speed regulation to command
 
-#define THRESHOLD   360   // random value, threshold below which the PID controller for the distance function driving activates
+#define THRESHOLD   700   // random value, threshold below which the PID controller for the distance function driving activates
 // physical dimensions
-#define CircumferenceWheel 342.0   // mm random value
-#define WidthRobot  250.0   // mm random value
+#define CircumferenceWheel1 317.0   // mm   size of left wheel
+#define CircumferenceWheel2 320.0   // mm   size of right wheel
+#define WidthRobot          250.0   // mm random value
 
 // PID Forward Driving(used in the Drive function, to make the robot drive straight)
-#define DKp           1   // random value
-#define DKd           3   // random value
-#define DKi           0   // random value
+#define DKp           0.6   // best value until now
+#define DKd           0.2   // best value until now
+#define DKi           0   // zero because the integral part doesnt work well with the PID Controller
 
 // PID Turn Radius Degrees
-#define TKp           0
-#define TKd           0
+#define TKp           0     // yet to be determined
+#define TKd           0     // yet to be determined
 
 // PID Turn Straight Degrees
-#define DeKp          0
-#define DeKd          0
-#define DeKi          0
+#define DeKp          0     // yet to be determined
+#define DeKd          0     // yet to be determined
+#define DeKi          0     // yet to be determined
 
 // PID Distance(used to compute the accelerations when reaching the desired distance)
-#define Kp            0.75  // random value
-#define Kd            13   // random value
-#define Ki            0   // random value
+#define Kp            0.47  // very good value, dont change without saving them somewhere
+#define Kd            0.8   // very good value, dont change without saving them somewhere
+#define Ki            0   // zero because we dont need the integral of the distance
 
 #endif

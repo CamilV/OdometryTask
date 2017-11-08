@@ -50,9 +50,9 @@ void Robot::Forward(float Distance){       // function that should make the robo
   Wire.beginTransmission(Adress);
   Wire.write(Command);
   Wire.write(0x20);            // sends byte to restore the encoders to 0
-  Wire.write(0x30);         
+  //Wire.write(0x30);         
   Wire.endTransmission();
-  Distance = int(360 * Distance / CircumferenceWheel);
+  Distance = int(360 * Distance / (CircumferenceWheel1/2 + CircumferenceWheel2/2) + 0.5);
   
   
   float LastError = 0, SumError = 0, Error;
@@ -61,7 +61,7 @@ void Robot::Forward(float Distance){       // function that should make the robo
   int n=0;
   Goal = 0;
   SumErrorF = 0;
-  while(!Goal)                           // while it wasnt reached the target distance, it repeats this loop
+  while(!Goal)                           // while it hasnt reached the target distance, it repeats this loop
   {
     
     ReadEncoders();                      // read the values of the encoders and stores them in E1 and E2
@@ -97,16 +97,19 @@ void Robot::Forward(float Distance){       // function that should make the robo
   Wire.endTransmission();      // set speed of motor 2 (right) to 0, stops both motors
 }
 
-
+// this function ensures that the robot dirves straight
 void Robot::Drive(float Speed){
-  float MotorCorrection, S1, S2, Error;
+  float MotorCorrection, S1, S2; 
+  float Error;
+  if(Speed > 127) Speed = 127;
+  if(Speed < -128) Speed = -128;      // caps the speed 
   Wire.beginTransmission(Adress);
   Wire.write(Mode);
   Wire.write(1);            // sets the MD25 to mode 1
   Wire.endTransmission();
 
   
-  Error = E2 - E1;
+  Error = E2 * CircumferenceWheel2/1000 - E1 * CircumferenceWheel1/1000; // uses the circumfernce of the wheels as a parameter because the wheels are slighty different in size
   Serial.print("   ");
   Serial.print(Error);
   Serial.print("   ");
@@ -122,18 +125,27 @@ void Robot::Drive(float Speed){
   if(S2 > 127) S2 = 127;
   if(S1 < -128) S1 = -128;     // capping the values for the motor speeds, as a value bigger than 127 or smaller than -128 might fuck up the controller
   if(S2 < -128) S2 = -128;
+  Serial.print("   ");
+  Serial.print(Speed);
+  Serial.print("   ");
+  Serial.print("   ");
+  Serial.print(S1);
+  Serial.print("   ");
+  Serial.print("   ");
+  Serial.print(S2);
+  Serial.print("   ");        // debbuging purpose
 
   Serial.print("PID");
   Wire.beginTransmission(Adress);
   Wire.write(Speed1);
-  Wire.write(int(S1));
+  Wire.write(int(S1+0.5));
   Wire.endTransmission();       // set speed of motor 1 (left)
 
   Wire.beginTransmission(Adress);
   Wire.write(Speed2);
-  Wire.write(int(S2));
+  Wire.write(int(S2+0.5));
   Wire.endTransmission();      // set speed of motor 2 (right)
-  //delay(5);
+  //delay(2);
 }
 
 void Robot::Turn(float Radius, int Degrees, bool Direction){  // left = 0 right = 1
@@ -155,12 +167,12 @@ void Robot::Turn(float Radius, int Degrees, bool Direction){  // left = 0 right 
   Goal = 0;
   while(!Goal){
     ReadEncoders();
-    if(Direction == 0){
-      Angle1 = E1 * 180/((Radius - WidthRobot/2)*3.14);
-      Angle2 = E2 * 180/((Radius + WidthRobot/2)*3.14);
+    if(Direction == 0){         // case we want to turn left
+      Angle1 = E1 * 180/((Radius - WidthRobot/2)*3.14);      // calculates the angle of the wheel 1
+      Angle2 = E2 * 180/((Radius + WidthRobot/2)*3.14);      // calculates the angle of the wheel 2
       
     }
-    else{
+    else{                         // case we want to turn right
       Angle1 = E1 * 180/((Radius + WidthRobot/2)*3.14);
       Angle2 = E2 * 180/((Radius - WidthRobot/2)*3.14);
     }
@@ -178,10 +190,11 @@ void Robot::Turn(float Radius, int Degrees, bool Direction){  // left = 0 right 
   }
 }
 
+// ensures the robot stays paralel to the radius of the curvature
 void Robot::StraightTurn(float Radius, bool Direction,float Speed){
   float Angle1, Angle2, Error,LastError, MotorCorrection;
   float S1, S2;
-  if(Direction == 1){
+  if(Direction == 1){   // 2 cases for both direction
       Angle1 = E1 * 180/((Radius + WidthRobot/2)*3.14);
       Angle2 = E2 * 180/((Radius - WidthRobot/2)*3.14);
       Error = Angle1 - Angle2;
@@ -205,16 +218,15 @@ void Robot::StraightTurn(float Radius, bool Direction,float Speed){
     if(S2 > 127) S2 = 127;
     if(S1 < -128) S1 = -128;     // capping the values for the motor speeds, as a value bigger than 127 or smaller than -128 might fuck up the controller
     if(S2 < -128) S2 = -128;
-    int Si1 = int(S1);
-    int Si2 = int(S2);
+    
     Wire.beginTransmission(Adress);
     Wire.write(Speed1);
-    Wire.write(Si1);
+    Wire.write(int(S1+0.5));
     Wire.endTransmission();       // set speed of motor 1 (left)
   
     Wire.beginTransmission(Adress);
     Wire.write(Speed2);
-    Wire.write(Si2);
+    Wire.write(int(S2+0.5));
     Wire.endTransmission();      // set speed of motor 2 (right)
 
     
