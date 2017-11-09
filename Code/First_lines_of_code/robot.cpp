@@ -4,6 +4,15 @@
 
 float LastErrorF = 0, SumErrorF = 0;
 
+void Robot::Initialize()
+{
+  Serial.begin(9600);
+  Wire.begin();
+  pinMode(LED,OUTPUT);
+  pinMode(Buzzer,OUTPUT);
+  pinMode(Servo,OUTPUT);
+}
+
 void Robot::ReadEncoders()
 {
   E1 = 0;
