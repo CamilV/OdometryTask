@@ -10,6 +10,8 @@ class Robot
     void Forward(float distance);
     void Turn(float Radius,int Degrees, bool Direction);
     void Initialize();
+    void SpinLeft(float Degrees);
+    void SpinRight(float Degrees);
     // Encoder Reading
     void ReadEncoders();
 
