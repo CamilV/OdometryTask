@@ -23,7 +23,7 @@
 // physical dimensions
 #define CircumferenceWheel1 317.0   // mm   size of left wheel
 #define CircumferenceWheel2 320.0   // mm   size of right wheel
-#define WidthRobot          250.0   // mm random value
+#define WidthRobot          287.0   // mm measured
 
 // PID Forward Driving(used in the Drive function, to make the robot drive straight)
 #define DKp           0.6   // best value until now
@@ -31,11 +31,11 @@
 #define DKi           0   // zero because the integral part doesnt work well with the PID Controller
 
 // PID Turn Radius Degrees
-#define TKp           0     // yet to be determined
-#define TKd           0     // yet to be determined
+#define TKp           0.42     // yet to be determined
+#define TKd           0.4     // yet to be determined
 
 // PID Turn Straight Degrees
-#define DeKp          0     // yet to be determined
+#define DeKp          4     // yet to be determined
 #define DeKd          0     // yet to be determined
 #define DeKi          0     // yet to be determined
 

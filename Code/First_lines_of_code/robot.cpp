@@ -4,17 +4,15 @@
 
 float LastErrorF = 0, SumErrorF = 0;
 
-void Robot::Initialize()
-{
+void Robot::Initialize(){
   Serial.begin(9600);
   Wire.begin();
   pinMode(LED,OUTPUT);
   pinMode(Buzzer,OUTPUT);
-  pinMode(Servo,OUTPUT);
+  pinMode(ServoMotor,OUTPUT);
 }
 
-void Robot::ReadEncoders()
-{
+void Robot::ReadEncoders(){
   E1 = 0;
   E2 = 0;
   Wire.beginTransmission(Adress);                      // Send byte to get a reading from encoder 1
@@ -44,11 +42,8 @@ void Robot::ReadEncoders()
   E2 += Wire.read();                                     // Third byte for encoder 2, LH
   E2 <<= 8;
   E2  +=Wire.read();                                     // Fourth byte for encoder 2, LL
-  Serial.print(E1);
-  Serial.print("  ");
-  Serial.println(E2);
-
 }
+
 void Robot::Forward(float Distance){       // function that should make the robot drive forward in a straight line for a specified distance
   Serial.print("Forward");
   Wire.beginTransmission(Adress);
@@ -177,24 +172,34 @@ void Robot::Turn(float Radius, int Degrees, bool Direction){  // left = 0 right 
   while(!Goal){
     ReadEncoders();
     if(Direction == 0){         // case we want to turn left
-      Angle1 = E1 * 180/((Radius - WidthRobot/2)*3.14);      // calculates the angle of the wheel 1
-      Angle2 = E2 * 180/((Radius + WidthRobot/2)*3.14);      // calculates the angle of the wheel 2
+      Angle1 = abs(E1 * 180/((Radius - WidthRobot/2)*3.14));      // calculates the angle of the wheel 1
+      Angle2 = abs(E2 * 180/((Radius + WidthRobot/2)*3.14));      // calculates the angle of the wheel 2
       
     }
     else{                         // case we want to turn right
-      Angle1 = E1 * 180/((Radius + WidthRobot/2)*3.14);
-      Angle2 = E2 * 180/((Radius - WidthRobot/2)*3.14);
+      Angle1 =abs(E1 * 180/((Radius + WidthRobot/2)*3.14));
+      Angle2 = abs(E2 * 180/((Radius - WidthRobot/2)*3.14));
     }
+    Serial.print(Angle1);
+    Serial.print("    ");
+    Serial.print(Angle2);
     CurrentAngle = (Angle2+Angle1)/2;
 
     Error = Degrees - CurrentAngle;
-    if(Error > 20) Speed = 127;
+    if(Error > 120) Speed = 80;
     else {Speed = TKp * Error + TKd * (Error - LastError);
           LastError = Error;
     }
+    if(Speed > 80) Speed = 80;
+    if(Speed < -80) Speed = -80;
+    Serial.print("   ");
+    Serial.print(Error);
+    Serial.print("   ");
+    Serial.print(Speed);
+    Serial.print("   ");
     StraightTurn(Radius, Direction, Speed);
-    if(Error == 0) n++;         // every time the error is 0, the counter goes up by 1
-    if(Error > 50) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
+    if(abs(Error)<5) n++;         // every time the error is 0, the counter goes up by 1
+    if(abs(Error) > 10) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
     if(n == 10) Goal = 1;
   }
 }
@@ -204,8 +209,8 @@ void Robot::StraightTurn(float Radius, bool Direction,float Speed){
   float Angle1, Angle2, Error,LastError, MotorCorrection;
   float S1, S2;
   if(Direction == 1){   // 2 cases for both direction
-      Angle1 = E1 * 180/((Radius + WidthRobot/2)*3.14);
-      Angle2 = E2 * 180/((Radius - WidthRobot/2)*3.14);
+      Angle1 = abs(E1 * 180/((Radius + WidthRobot/2)*3.14));
+      Angle2 = abs(E2 * 180/((Radius - WidthRobot/2)*3.14));
       Error = Angle1 - Angle2;
       MotorCorrection = DeKp * Error + DeKd * (Error - LastError) + DeKi * SumError; 
       LastError = Error;
@@ -214,8 +219,8 @@ void Robot::StraightTurn(float Radius, bool Direction,float Speed){
       S1 = Speed - MotorCorrection;
     }
     else{
-      Angle1 = E1 * 180/((Radius - WidthRobot/2)*3.14);
-      Angle2 = E2 * 180/((Radius + WidthRobot/2)*3.14);
+      Angle1 = abs(E1 * 180/((Radius - WidthRobot/2)*3.14));
+      Angle2 = abs(E2 * 180/((Radius + WidthRobot/2)*3.14));
       Error = Angle2 - Angle1;
       MotorCorrection = DeKp * Error + DeKd * (Error - LastError) + DeKi * SumError; 
       LastError = Error;
@@ -237,7 +242,91 @@ void Robot::StraightTurn(float Radius, bool Direction,float Speed){
     Wire.write(Speed2);
     Wire.write(int(S2+0.5));
     Wire.endTransmission();      // set speed of motor 2 (right)
-
-    
 }
 
+void Robot::SpinLeft(float Degrees){
+  Wire.beginTransmission(Adress);
+  Wire.write(Mode);
+  Wire.write(0x01);            // sets the MD25 to mode 1
+  Wire.endTransmission();
+  
+  Wire.beginTransmission(Adress);
+  Wire.write(Command);
+  Wire.write(0x20);            // sends byte to restore the encoders to 0
+  Wire.endTransmission();
+  float Error, LastError;
+  float Speed;
+  int n;
+  Degrees = 3.1428 *WidthRobot * Degrees / (CircumferenceWheel1/2 + CircumferenceWheel2/2);
+  Goal = 0;
+  while(!Goal){
+    ReadEncoders();
+    Error = Degrees - E2;
+    Speed = TKp * Error + TKd*(Error - LastError)+0.5;
+    //Speed = 80;
+    LastError = Error;
+    if(Speed > 127) Speed = 127;
+    if(Speed < -128) Speed = -128;
+    Serial.print(Speed);
+    Serial.print("   ");
+    Serial.print(Error);
+    Serial.println("   ");
+    Wire.beginTransmission(Adress);
+    Wire.write(Speed2);
+    Wire.write(int(Speed+0.5));
+    Wire.endTransmission();
+
+    Wire.beginTransmission(Adress);
+    Wire.write(Speed1);
+    Wire.write(int(-Speed-0.5));
+    Wire.endTransmission();
+    if((Error < 5) && (Error >-5)) n++;         // every time the error is 0, the counter goes up by 1
+    if((Error > 20)&&(Error < -20)) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
+    if(n == 5) Goal = 1;       // random value, as soon as the counter reaches 10, it breaks out of the loop (it reaches the goal)
+  }
+}
+
+void Robot::SpinRight(float Degrees){
+  Wire.beginTransmission(Adress);
+  Wire.write(Mode);
+  Wire.write(0x01);            // sets the MD25 to mode 1
+  Wire.endTransmission();
+  
+  Wire.beginTransmission(Adress);
+  Wire.write(Command);
+  Wire.write(0x20);            // sends byte to restore the encoders to 0
+  Wire.endTransmission();
+  float Error, LastError;
+  float Speed;
+  int n;
+  Degrees = 3.1428 *WidthRobot * Degrees / (CircumferenceWheel1/2 + CircumferenceWheel2/2);
+  Goal = 0;
+  while(!Goal){
+    ReadEncoders();
+    Error = Degrees - E1;
+    Speed = TKp * Error + TKd*(Error - LastError)+0.5;
+    //Speed = 80;
+    LastError = Error;
+    if(Speed > 127) Speed = 127;
+    if(Speed < -128) Speed = -128;
+    Serial.print(Speed);
+    Serial.print("   ");
+    Serial.print(Error);
+    Serial.println("   ");
+    Wire.beginTransmission(Adress);
+    Wire.write(Speed2);
+    Wire.write(int(-Speed-0.5));
+    Wire.endTransmission();
+
+    Wire.beginTransmission(Adress);
+    Wire.write(Speed1);
+    Wire.write(int(Speed+0.5));
+    Wire.endTransmission();
+    if((Error < 5) && (Error >-5)) n++;         // every time the error is 0, the counter goes up by 1
+    if((Error > 20)&&(Error < -20)) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
+    if(n == 5) Goal = 1;       // random value, as soon as the counter reaches 10, it breaks out of the loop (it reaches the goal)
+  }
+  
+  
+ 
+}

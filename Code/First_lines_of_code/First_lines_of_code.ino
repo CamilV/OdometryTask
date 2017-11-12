@@ -5,12 +5,15 @@ Robot R;
 
 void setup() {
   R.Initialize();
-  R.Forward(1000);
+  //R.Forward(1000);
+  //R.Turn(0, 180, 0);
+ 
   tone(Buzzer,50,1000);
 };
 
 void loop() {
-  
+  R.Forward(1000); 
+  R.SpinLeft(180);
 //  Wire.beginTransmission(Adress);
 //  Wire.write(Speed1);
 //  Wire.write(255);
