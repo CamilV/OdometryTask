@@ -284,6 +284,51 @@ void Robot::SpinLeft(float Degrees){
     if((Error > 20)&&(Error < -20)) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
     if(n == 5) Goal = 1;       // random value, as soon as the counter reaches 10, it breaks out of the loop (it reaches the goal)
   }
+<<<<<<< HEAD
+=======
+}
+
+void Robot::SpinRight(float Degrees){
+  Wire.beginTransmission(Adress);
+  Wire.write(Mode);
+  Wire.write(0x01);            // sets the MD25 to mode 1
+  Wire.endTransmission();
+  
+  Wire.beginTransmission(Adress);
+  Wire.write(Command);
+  Wire.write(0x20);            // sends byte to restore the encoders to 0
+  Wire.endTransmission();
+  float Error, LastError;
+  float Speed;
+  int n;
+  Degrees = 3.1428 *WidthRobot * Degrees / (CircumferenceWheel1/2 + CircumferenceWheel2/2);
+  Goal = 0;
+  while(!Goal){
+    ReadEncoders();
+    Error = Degrees - E1;
+    Speed = TKp * Error + TKd*(Error - LastError)+0.5;
+    //Speed = 80;
+    LastError = Error;
+    if(Speed > 127) Speed = 127;
+    if(Speed < -128) Speed = -128;
+    Serial.print(Speed);
+    Serial.print("   ");
+    Serial.print(Error);
+    Serial.println("   ");
+    Wire.beginTransmission(Adress);
+    Wire.write(Speed2);
+    Wire.write(int(-Speed-0.5));
+    Wire.endTransmission();
+
+    Wire.beginTransmission(Adress);
+    Wire.write(Speed1);
+    Wire.write(int(Speed+0.5));
+    Wire.endTransmission();
+    if((Error < 5) && (Error >-5)) n++;         // every time the error is 0, the counter goes up by 1
+    if((Error > 20)&&(Error < -20)) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
+    if(n == 5) Goal = 1;       // random value, as soon as the counter reaches 10, it breaks out of the loop (it reaches the goal)
+  }
+>>>>>>> 04496db6170f6e1ea99829462cb6d141d5a20f74
 }
 
 void Robot::SpinRight(float Degrees){

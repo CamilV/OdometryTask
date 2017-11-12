@@ -23,7 +23,11 @@
 // physical dimensions
 #define CircumferenceWheel1 317.0   // mm   size of left wheel
 #define CircumferenceWheel2 320.0   // mm   size of right wheel
+<<<<<<< HEAD
 #define WidthRobot          287.0   // mm measured
+=======
+#define WidthRobot          287.0   // mm random value
+>>>>>>> 04496db6170f6e1ea99829462cb6d141d5a20f74
 
 // PID Forward Driving(used in the Drive function, to make the robot drive straight)
 #define DKp           0.6   // best value until now
