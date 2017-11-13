@@ -1,8 +1,11 @@
 #include <Wire.h>
 #include "ROBOT.h"
 #include "defines.h"
+#include <Servo.h>
 
 float LastErrorF = 0, SumErrorF = 0;
+
+Servo myServo;
 
 void Robot::Initialize()
 {
@@ -10,7 +13,9 @@ void Robot::Initialize()
   Wire.begin();
   pinMode(LED,OUTPUT);
   pinMode(Buzzer,OUTPUT);
-  pinMode(ServoMotor,OUTPUT);
+  myServo.attach(ServoMotor);
+  myServo.write(servoPos);
+  delay(1000);
 }
 
 void Robot::ReadEncoders()
@@ -455,6 +460,13 @@ void Robot::SpinRight(float Degrees){
   Wire.write(Speed2);
   Wire.write(0);
   Wire.endTransmission();
+}
+
+void Robot::Dispensemm(int ServoAngle) {
+  myServo.attach(ServoMotor);
+  myServo.write(ServoAngle);
+  Serial.print(ServoAngle);
+  delay(1000);
 }
 
 

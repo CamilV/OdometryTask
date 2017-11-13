@@ -16,6 +16,7 @@ class Robot
     // Encoder Reading
     void ReadEncoders();
     void LEDBlink();
+    void Dispensemm(int ServoAngle);
 
     // Initialize
     

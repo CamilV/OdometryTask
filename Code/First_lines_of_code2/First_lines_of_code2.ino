@@ -1,47 +1,54 @@
 #include "defines.h"
 #include "ROBOT.h"
 #include <Wire.h>
+
 Robot R;
 
 void setup() {
-  R.Initialize();
+  R.Initialize(); 
   // R.Forward(1000);
   //tone(Buzzer,50,1000);
-  R.Forward(428);
+  R.Forward(428); // 13 to 12
   R.LEDBlink();
-  R.Forward(360);
+  R.Forward(360); // 12 to 11
   R.LEDBlink();
   R.SpinRight(132.4);
-  R.Turn1();
+  R.Turn1(); // 11 to 10
   R.LEDBlink();
+  R.Dispensemm(42);
   R.SpinLeft(84);
-  R.Forward(180);
+  R.Forward(180); // 10 to 9
   R.LEDBlink();
   R.SpinRight(130);
-  R.Forward(620);
+  R.Forward(620); // 9 to 8
   R.LEDBlink();
+  R.Dispensemm(72);
   R.SpinRight(36);
-  R.Forward(390);
+  R.Forward(390); // 8 to 7
   R.LEDBlink();
   R.SpinRight(84);
-  R.Forward(400);
+  R.Forward(400); // 7 to 6
+  R.LEDBlink();
+  R.Dispensemm(100);
+  R.SpinRight(84);
+  R.Forward(400); // 6 to 5
   R.LEDBlink();
   R.SpinRight(84);
-  R.Forward(400);
+  R.Forward(625); // 5 to 4
   R.LEDBlink();
-  R.SpinRight(84);
-  R.Forward(625);
+  R.Dispensemm(129);  
   R.SpinLeft(90);
-  R.Turn2();  
+  R.Turn2(); // 4 to 3
   R.SpinRight(83);
   R.LEDBlink();
-  R.Forward(480);
+  R.Forward(480); // 3 to 2
   R.LEDBlink();
+  R.Dispensemm(158);
   R.SpinRight(83);
-  R.Forward(260);
+  R.Forward(260); // 2 to 1
   R.LEDBlink();
   R.SpinLeft(90);
-  R.Forward(340);
+  R.Forward(340); // 1 to 0
   R.LEDBlink();
 };
 

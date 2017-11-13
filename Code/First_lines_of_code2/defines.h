@@ -44,5 +44,8 @@
 #define Kd            0.8   // very good value, dont change without saving them somewhere
 #define Ki            0   // zero because we dont need the integral of the distance
 
+//Servo Initial Angle
+#define servoPos      10
+
 #endif
 
