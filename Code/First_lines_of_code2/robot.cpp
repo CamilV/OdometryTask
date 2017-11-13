@@ -354,7 +354,7 @@ void Robot::LEDBlink(){
   digitalWrite(LED,HIGH);
   delay(150);
   digitalWrite(LED,LOW);
-  delay(1000);
+//  delay(1000);
 }
 void Robot::SpinLeft(float Degrees){
   Wire.beginTransmission(Adress);

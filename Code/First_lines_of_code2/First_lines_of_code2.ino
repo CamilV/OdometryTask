@@ -12,8 +12,9 @@ void setup() {
   R.LEDBlink();
   R.Forward(360); // 12 to 11
   R.LEDBlink();
-  R.SpinRight(132.4);
+  R.SpinRight(130.4);
   R.Turn1(); // 11 to 10
+  R.Forward(30);
   R.LEDBlink();
   R.Dispensemm(42);
   R.SpinLeft(84);
@@ -24,17 +25,17 @@ void setup() {
   R.LEDBlink();
   R.Dispensemm(72);
   R.SpinRight(36);
-  R.Forward(390); // 8 to 7
+  R.Forward(385); // 8 to 7
   R.LEDBlink();
   R.SpinRight(84);
-  R.Forward(400); // 7 to 6
+  R.Forward(384); // 7 to 6
   R.LEDBlink();
   R.Dispensemm(100);
-  R.SpinRight(84);
+  R.SpinRight(80);
   R.Forward(400); // 6 to 5
   R.LEDBlink();
   R.SpinRight(84);
-  R.Forward(625); // 5 to 4
+  R.Forward(636); // 5 to 4
   R.LEDBlink();
   R.Dispensemm(129);  
   R.SpinLeft(90);
