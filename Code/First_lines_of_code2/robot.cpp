@@ -343,6 +343,7 @@ void Robot::StraightTurn2(float Speed){
     Wire.endTransmission();      // set speed of motor 2 (right)
 }
 void Robot::LEDBlink(){
+  tone(Buzzer, 600);
   digitalWrite(LED,HIGH);
   delay(150);
   digitalWrite(LED,LOW);
@@ -354,7 +355,7 @@ void Robot::LEDBlink(){
   digitalWrite(LED,HIGH);
   delay(150);
   digitalWrite(LED,LOW);
-//  delay(1000);
+  noTone(Buzzer);
 }
 void Robot::SpinLeft(float Degrees){
   Wire.beginTransmission(Adress);
