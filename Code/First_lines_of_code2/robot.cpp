@@ -190,8 +190,8 @@ void Robot::Turn1(){  // left = 0 right = 1
   int  n=0;
   float GD1, GD2;
   Goal = 0;
-  GD1 = 1.51*3.1415*(180 - WidthRobot/2);
-  GD2 = 1.51*3.1415*(180 + WidthRobot/2);
+  GD1 = 1.53*3.1415*(180 - WidthRobot/2);
+  GD2 = 1.53*3.1415*(180 + WidthRobot/2);
   GD1 = int(360*GD1/CircumferenceWheel1 + 0.5);
   GD2 = int(360*GD2/CircumferenceWheel2 + 0.5);
   while(!Goal){
@@ -236,8 +236,8 @@ void Robot::Turn2(){  // left = 0 right = 1
   int  n=0;
   float GD1, GD2;
   Goal = 0;
-  GD1 = 0.5*3.1415*(260 - WidthRobot/2);
-  GD2 = 0.5*3.1415*(260 + WidthRobot/2);
+  GD1 = 0.515*3.1415*(260 - WidthRobot/2);
+  GD2 = 0.515*3.1415*(260 + WidthRobot/2);
   GD1 = int(360*GD1/CircumferenceWheel1 + 0.5);
   GD2 = int(360*GD2/CircumferenceWheel2 + 0.5);
   while(!Goal){
@@ -270,7 +270,7 @@ void Robot::StraightTurn1(float Speed){
     float S1,S2;
     if(Speed > 65) Speed = 65;
     if(Speed < -128) Speed = -128;
-    float GD1 = 1.51*3.1415*(180 - WidthRobot/2);
+    float GD1 = 1.5*3.1415*(180 - WidthRobot/2);
     float GD2 = 1.5*3.1415*(180 + WidthRobot/2);
     GD1 = int(360*GD1/CircumferenceWheel1 + 0.5);
     GD2 = int(360*GD2/CircumferenceWheel2 + 0.5);
@@ -349,7 +349,7 @@ void Robot::LEDBlink(){
   digitalWrite(LED,HIGH);
   delay(150);
   digitalWrite(LED,LOW);
-  delay(5000);
+  delay(1000);
 }
 void Robot::SpinLeft(float Degrees){
   Wire.beginTransmission(Adress);
@@ -446,6 +446,15 @@ void Robot::SpinRight(float Degrees){
     if(n == 5) Goal = 1;       // random value, as soon as the counter reaches 10, it breaks out of the loop (it reaches the goal)
   }
   //Serial.print("FINISH");
+   Wire.beginTransmission(Adress);
+  Wire.write(Speed1);
+  Wire.write(0);
+  Wire.endTransmission();       // set speed of motor 1 (left) to 0
+
+  Wire.beginTransmission(Adress);
+  Wire.write(Speed2);
+  Wire.write(0);
+  Wire.endTransmission();
 }
 
 
