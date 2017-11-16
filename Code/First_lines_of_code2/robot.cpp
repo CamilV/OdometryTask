@@ -6,7 +6,9 @@
 float LastErrorF = 0, SumErrorF = 0;
 
 Servo myServo;
-
+/*
+ * Function used to initialize all starting parameters of the robot
+ */
 void Robot::Initialize()
 {
   Serial.begin(9600);
@@ -17,7 +19,10 @@ void Robot::Initialize()
   myServo.write(servoPos);
   delay(1000);
 }
-
+/*
+ * Function used to read both encoders and store their value into the global variables E1 and E2
+ * code is taken from the Odometry Briefing document and adapted to work for both encoders
+ */
 void Robot::ReadEncoders()
 {
   E1 = 0;
@@ -54,6 +59,12 @@ void Robot::ReadEncoders()
 //  Serial.println(E2);
 
 }
+/*
+ * Function that takes as an input a distance in mm and makes the robot drive in a straight line that distance
+ * Uses a PID controller to compute the required speed which is send to the motors through th Drive() function
+ * Implements an acceleration as the function is called in order to prevent sudden acceleration
+ * Uses a counter to check wheter or not it has reached its required distance and it hasnt overshot
+ */
 void Robot::Forward(float Distance){       // function that should make the robot drive forward in a straight line for a specified distance
   Serial.print("Forward");
   Wire.beginTransmission(Adress);
@@ -111,7 +122,10 @@ void Robot::Forward(float Distance){       // function that should make the robo
   Wire.endTransmission();      // set speed of motor 2 (right) to 0, stops both motors
 }
 
-// this function ensures that the robot dirves straight
+/*
+ * Private function only called by the Forward() function
+ * Implements a PID controller to ensure the robot drives straight at all times
+ */
 void Robot::Drive(float Speed){
   float MotorCorrection, S1, S2; 
   float Error;
@@ -150,7 +164,7 @@ void Robot::Drive(float Speed){
 //  Serial.print("   ");        // debbuging purpose
 
 //  Serial.print("PID");
-  if(nor%2 == 0){
+  if(nor%2 == 0){                     // implements a randomizer to power one motor before the other, by powering only one motor before the other, over time the error becomes significant
     Wire.beginTransmission(Adress);
     Wire.write(Speed2);
     Wire.write(int(S2+0.5));
@@ -177,8 +191,12 @@ void Robot::Drive(float Speed){
     nor++;
   }
 }
-
-void Robot::Turn1(){  // left = 0 right = 1
+/*
+ * Function used to drive around the first arc of the course.
+ * Similarly to Forward(), implements a PID controller to deccelerate smoothly to the target distance
+ * Because of the lower speed, it doesn't require an initial acceleration
+ */
+void Robot::Turn1(){  
   Wire.beginTransmission(Adress);
   Wire.write(Mode);
   Wire.write(0x01);            // sets the MD25 to mode 1
@@ -195,9 +213,9 @@ void Robot::Turn1(){  // left = 0 right = 1
   int  n=0;
   float GD1, GD2;
   Goal = 0;
-  GD1 = 1.53*3.1415*(180 - WidthRobot/2);
+  GD1 = 1.53*3.1415*(180 - WidthRobot/2);         // computes the distance that each wheel has to travel
   GD2 = 1.53*3.1415*(180 + WidthRobot/2);
-  GD1 = int(360*GD1/CircumferenceWheel1 + 0.5);
+  GD1 = int(360*GD1/CircumferenceWheel1 + 0.5);   // converts the distance into encoder ticks
   GD2 = int(360*GD2/CircumferenceWheel2 + 0.5);
   while(!Goal){
     ReadEncoders();
@@ -208,8 +226,8 @@ void Robot::Turn1(){  // left = 0 right = 1
           LastError = Error;
     }
     StraightTurn1(Speed);
-    if(abs(Error) < 5) n++;         // every time the error is 0, the counter goes up by 1
-    if(abs(Error) > 20) n=0;         // random value, if the value of the error increases (overshoots), the counter resets
+    if(abs(Error) < 5) n++;         // every time the error is less than a small value, the counter goes up by 1
+    if(abs(Error) > 20) n=0;         // if the value of the error increases (overshoots), the counter resets
     if(n == 5) Goal = 1;
   }
   Serial.print("Finished");
@@ -223,8 +241,10 @@ void Robot::Turn1(){  // left = 0 right = 1
   Wire.write(0);
   Wire.endTransmission();
 }
-
-void Robot::Turn2(){  // left = 0 right = 1
+/*
+ * Similar to Turn1(), this function is used to get around the second arc of the course
+ */
+void Robot::Turn2(){  
   Wire.beginTransmission(Adress);
   Wire.write(Mode);
   Wire.write(0x01);            // sets the MD25 to mode 1
@@ -269,7 +289,10 @@ void Robot::Turn2(){  // left = 0 right = 1
   Wire.write(0);
   Wire.endTransmission();
 }
-// ensures the robot stays paralel to the radius of the curvature
+/*
+ * Private function called by Turn1() every time the PID controller computes a new velocity
+ * This function computes the required speed value for both motors and sends that data to the MD25
+ */
 void Robot::StraightTurn1(float Speed){
     float MotorCorrection=0, Error, LastError;
     float S1,S2;
@@ -306,6 +329,9 @@ void Robot::StraightTurn1(float Speed){
     Wire.write(int(S2+0.5));
     Wire.endTransmission();      // set speed of motor 2 (right)
 }
+/*
+ * Similar to StraightTurn1()
+ */
 void Robot::StraightTurn2(float Speed){
     float MotorCorrection=0, Error, LastError;
     float S1,S2;
@@ -342,6 +368,9 @@ void Robot::StraightTurn2(float Speed){
     Wire.write(int(S2+0.5));
     Wire.endTransmission();      // set speed of motor 2 (right)
 }
+/*
+ * Function used to signal each waypoint alomg the course by 3 short LED blinks and a short buzzer sound
+ */
 void Robot::LEDBlink(){
   tone(Buzzer, 600);
   digitalWrite(LED,HIGH);
@@ -357,6 +386,10 @@ void Robot::LEDBlink(){
   digitalWrite(LED,LOW);
   noTone(Buzzer);
 }
+/*
+ * This function is used to rotate the robot around its axis by a given number of degrees
+ * Implements a PID  controller
+ */
 void Robot::SpinLeft(float Degrees){
   Wire.beginTransmission(Adress);
   Wire.write(Mode);
@@ -370,7 +403,7 @@ void Robot::SpinLeft(float Degrees){
   float Error, LastError;
   float Speed;
   int n=0;
-  Degrees = 3.1428 *WidthRobot * Degrees / ( CircumferenceWheel2);
+  Degrees = 3.1428 *WidthRobot * Degrees / ( CircumferenceWheel2);   // converts degrees to encoder ticks for the right wheel, because it's the one spinning forward
   Goal = 0;
   while(!Goal){
     ReadEncoders();
@@ -408,7 +441,9 @@ void Robot::SpinLeft(float Degrees){
   Wire.write(0);
   Wire.endTransmission();
 }
-
+/*
+ * Very similar to SpinLeft(), only this function reverses the spin direction
+ */
 void Robot::SpinRight(float Degrees){
   Wire.beginTransmission(Adress);
   Wire.write(Mode);
@@ -462,12 +497,14 @@ void Robot::SpinRight(float Degrees){
   Wire.write(0);
   Wire.endTransmission();
 }
-
+/*
+ * Used to operate the servo that dispenses M&M
+ */
 void Robot::Dispensemm(int ServoAngle) {
   myServo.attach(ServoMotor);
   myServo.write(ServoAngle);
   Serial.print(ServoAngle);
-  delay(1000);
+  delay(200);
 }
 
 

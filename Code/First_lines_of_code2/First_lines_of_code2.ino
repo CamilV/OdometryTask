@@ -1,3 +1,7 @@
+/*
+ * Code written by Camil Vasilovici & Adam Waters
+ */
+
 #include "defines.h"
 #include "ROBOT.h"
 #include <Wire.h>
